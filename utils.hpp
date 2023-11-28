@@ -9,6 +9,6 @@
 
 #include <SFML/Graphics.hpp>
 
-void render(sf::RenderWindow &window, std::vector<int> &v);
+void render(sf::RenderWindow &window, std::vector<int> &v, int curr_index);
 
 #endif

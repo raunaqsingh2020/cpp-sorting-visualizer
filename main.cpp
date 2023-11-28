@@ -7,7 +7,6 @@
 #include <random>
 
 #include "algorithms.hpp"
-#include "utils.hpp"
 
 int main()
 {
@@ -20,6 +19,9 @@ int main()
 
     bool is_sorted = false;
 
+    // std::vector<std::string> options = {"Insertion Sort", "Merge Sort", "Bubble Sort"};
+    // DropdownMenu dropdown(window, options);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -28,12 +30,13 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
+            // dropdown.handleEvent(event);
         }
 
         if (!is_sorted)
         {
-            render(window, v);
-            insertion_sort(window, v, is_sorted);
+            render(window, v, 0);
+            merge_sort(window, v, 0, 99, is_sorted);
         }
     }
 }

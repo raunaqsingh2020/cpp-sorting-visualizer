@@ -10,7 +10,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(960, 600), "Sorting Visualizer");
+    sf::RenderWindow window(sf::VideoMode(1200, 720), "Sorting Visualizer");
 
     std::vector<int> v(100);
     std::iota(v.begin(), v.end(), 1);
@@ -35,8 +35,9 @@ int main()
 
         if (!is_sorted)
         {
-            render(window, v, 0);
-            merge_sort(window, v, 0, 99, is_sorted);
+            render(window, v, 0, is_sorted);
+            insertion_sort(window, v, is_sorted);
+            // merge_sort(window, v, 0, v.size() - 1, is_sorted);
         }
     }
 }

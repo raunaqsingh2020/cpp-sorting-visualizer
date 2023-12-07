@@ -36,8 +36,9 @@ int main()
         if (!is_sorted)
         {
             render(window, v, 0, is_sorted);
-            insertion_sort(window, v, is_sorted);
+            // insertion_sort(window, v, is_sorted);
             // merge_sort(window, v, 0, v.size() - 1, is_sorted);
+            quick_sort(window, v, 0, v.size() - 1, is_sorted);
         }
     }
 }

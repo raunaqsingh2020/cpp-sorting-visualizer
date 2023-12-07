@@ -81,6 +81,7 @@ int partition(sf::RenderWindow &window, std::vector<T> &v, int start, int end)
 {
     // Choose random pivot index and swap with end element
     int pivot_idx = start + std::rand() % (end - start + 1);
+    render(window, v, pivot_idx, false);
     std::swap(v[pivot_idx], v[end]);
 
     // Partition the vector
@@ -97,9 +98,7 @@ int partition(sf::RenderWindow &window, std::vector<T> &v, int start, int end)
     }
 
     std::swap(v[i + 1], v[end]);
-
     render(window, v, i + 1, false);
-
     return i + 1;
 }
 

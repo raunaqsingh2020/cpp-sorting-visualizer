@@ -7,10 +7,11 @@
 #include <random>
 
 #include "algorithms.hpp"
+#include "dropdown.hpp"
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(1200, 720), "Sorting Visualizer");
+    sf::RenderWindow window(sf::VideoMode(900, 640), "Sorting Visualizer");
 
     std::vector<int> v(100);
     std::iota(v.begin(), v.end(), 1);
@@ -19,8 +20,9 @@ int main()
 
     bool is_sorted = false;
 
-    // std::vector<std::string> options = {"Insertion Sort", "Merge Sort", "Bubble Sort"};
-    // DropdownMenu dropdown(window, options);
+    std::vector<std::string> options = {"Insertion Sort", "Merge Sort", "Bubble Sort"};
+    DropdownMenu dropdown = DropdownMenu(options);
+    dropdown.render(window);
 
     while (window.isOpen())
     {
@@ -30,14 +32,17 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            // dropdown.handleEvent(event);
+            if (event.type == sf::Event::MouseButtonPressed) {
+                dropdown.update_selection(event);
+                dropdown.render(window);
+            }
         }
 
-        if (!is_sorted)
-        {
-            render(window, v, 0, is_sorted);
-            insertion_sort(window, v, is_sorted);
-            // merge_sort(window, v, 0, v.size() - 1, is_sorted);
-        }
+        // if (!is_sorted)
+        // {
+        //     render(window, v, 0, is_sorted);
+        //     insertion_sort(window, v, is_sorted);
+        //     // merge_sort(window, v, 0, v.size() - 1, is_sorted);
+        // }
     }
 }

@@ -11,7 +11,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(900, 640), "Sorting Visualizer");
+    sf::RenderWindow window(sf::VideoMode(1200, 600), "Sorting Visualizer");
 
     std::vector<int> v(100);
     std::iota(v.begin(), v.end(), 1);
@@ -20,9 +20,11 @@ int main()
 
     bool is_sorted = false;
 
-    std::vector<std::string> options = {"Insertion Sort", "Merge Sort", "Bubble Sort"};
-    DropdownMenu dropdown = DropdownMenu(options);
-    dropdown.render(window);
+    std::vector<std::string> options = {"Insertion Sort", "Merge Sort", "Quick Sort"};
+    sf::Font font;
+    if (!font.loadFromFile("Arial.ttf")) std::cout << "Error loading font\n";
+
+    DropdownMenu dropdown(font, options);
 
     while (window.isOpen())
     {
@@ -32,27 +34,37 @@ int main()
         {
             if (event.type == sf::Event::Closed)
                 window.close();
-            if (event.type == sf::Event::MouseButtonPressed) {
-                dropdown.update_selection(event);
-                dropdown.render(window);
+            else {
+                if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+                    dropdown.handleEvent(event);
+                    if (!dropdown.getIsOpen()) {
+                        is_sorted = false;
+                        std::shuffle(v.begin(), v.end(), rng);
+                    }
+                }
             }
         }
 
-<<<<<<< HEAD
-        // if (!is_sorted)
-        // {
-        //     render(window, v, 0, is_sorted);
-        //     insertion_sort(window, v, is_sorted);
-        //     // merge_sort(window, v, 0, v.size() - 1, is_sorted);
-        // }
-=======
-        if (!is_sorted)
+        dropdown.update();
+        window.clear();
+        dropdown.render(window);
+        window.display();
+
+        int index = dropdown.getSelectedIndex();
+        if (index == 0 && !is_sorted)
         {
-            render(window, v, 0, is_sorted);
-            // insertion_sort(window, v, is_sorted);
-            // merge_sort(window, v, 0, v.size() - 1, is_sorted);
-            quick_sort(window, v, 0, v.size() - 1, is_sorted);
+            render(window, v, 0, is_sorted, dropdown);
+            insertion_sort(window, v, is_sorted, dropdown);
         }
->>>>>>> 2ce14308fed9db97cfd04c949a38051740513a88
+        else if (index == 1 && !is_sorted)
+        {
+            render(window, v, 0, is_sorted, dropdown);
+            merge_sort(window, v, 0, v.size() - 1, is_sorted, dropdown);
+        }
+        else if (index == 2 && !is_sorted)
+        {
+            render(window, v, 0, is_sorted, dropdown);
+            quick_sort(window, v, 0, v.size() - 1, is_sorted, dropdown);
+        }
     }
 }

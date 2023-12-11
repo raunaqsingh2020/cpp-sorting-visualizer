@@ -10,17 +10,33 @@
 #include <SFML/Graphics.hpp>
 #include "utils.hpp"
 
-// template <std::totally_ordered T>
-template <typename T>
-void insertion_sort(sf::RenderWindow &window, std::vector<T> &v, bool &is_sorted, DropdownMenu &dropdown);
+#include <thread>
+#include <chrono>
 
-// template <std::totally_ordered T>
 template <typename T>
-void merge_sort(sf::RenderWindow &window, std::vector<T> &v, int start, int end, bool &is_sorted, DropdownMenu &dropdown);
+void insertion_sort(sf::RenderWindow &window,
+                    DropdownMenu &dropdown,
+                    std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+                    std::tuple<int, int, int> &curr_index,
+                    std::tuple<bool, bool, bool> &is_sorted);
 
-// template <std::totally_ordered T>
 template <typename T>
-void quick_sort(sf::RenderWindow &window, std::vector<T> &v, int start, int end, bool &is_sorted, DropdownMenu &dropdown);
+void merge_sort(sf::RenderWindow &window,
+                DropdownMenu &dropdown,
+                std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+                std::tuple<int, int, int> &curr_index,
+                std::tuple<bool, bool, bool> &is_sorted,
+                int start,
+                int end);
+
+template <typename T>
+void quick_sort(sf::RenderWindow &window,
+                DropdownMenu &dropdown,
+                std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+                std::tuple<int, int, int> &curr_index,
+                std::tuple<bool, bool, bool> &is_sorted,
+                int start,
+                int end);
 
 #include "algorithms.tpp"
 

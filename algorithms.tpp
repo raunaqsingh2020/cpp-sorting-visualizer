@@ -4,46 +4,64 @@
 
 // --- INSERTION SORT ---
 
-// template <std::totally_ordered T>
 template <typename T>
-void insertion_sort(sf::RenderWindow &window, std::vector<T> &v, bool &is_sorted, DropdownMenu &dropdown)
+void insertion_sort(sf::RenderWindow &window,
+                    DropdownMenu &dropdown,
+                    std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+                    std::tuple<int, int, int> &curr_index,
+                    std::tuple<bool, bool, bool> &is_sorted)
 {
-    for (int j = 1; j < v.size(); j++)
+    auto &v1 = std::get<0>(v);
+    auto &idx1 = std::get<0>(curr_index);
+    auto &sorted1 = std::get<0>(is_sorted);
+
+    for (int j = 1; j < v1.size(); j++)
     {
-        int key = v[j];
+        int key = v1[j];
 
         // insert v[j] into sorted sequence v[1..j − 1]
         int i = j - 1;
-        while (i >= 0 && v[i] > key)
+        while (i >= 0 && v1[i] > key)
         {
-            v[i + 1] = v[i];
+            v1[i + 1] = v1[i];
             i--;
-            render(window, v, i, is_sorted, dropdown);
+            idx1 = i;
+            std::this_thread::sleep_for(std::chrono::milliseconds(15));
         }
 
-        v[i + 1] = key;
+        v1[i + 1] = key;
     }
 
-    is_sorted = true;
-    render(window, v, v.size() - 1, is_sorted, dropdown);
+    sorted1 = true;
+    idx1 = v1.size() - 1;
+    std::this_thread::sleep_for(std::chrono::milliseconds(15));
 
     return;
 }
 
 // --- MERGE SORT ---
 
-// template <std::totally_ordered T>
 template <typename T>
-void merge_sort(sf::RenderWindow &window, std::vector<T> &v, int start, int end, bool &is_sorted, DropdownMenu &dropdown)
+void merge_sort(sf::RenderWindow &window,
+                DropdownMenu &dropdown,
+                std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+                std::tuple<int, int, int> &curr_index,
+                std::tuple<bool, bool, bool> &is_sorted,
+                int start,
+                int end)
 {
+    auto &v2 = std::get<1>(v);
+    auto &idx2 = std::get<1>(curr_index);
+    auto &sorted2 = std::get<1>(is_sorted);
+
     int len = end - start + 1;
     if (len <= 1)
         return;
 
     int mid = start + (len / 2);
 
-    merge_sort(window, v, start, mid - 1, is_sorted, dropdown);
-    merge_sort(window, v, mid, end, is_sorted, dropdown);
+    merge_sort<T>(window, dropdown, v, curr_index, is_sorted, start, mid - 1);
+    merge_sort<T>(window, dropdown, v, curr_index, is_sorted, mid, end);
 
     // merge start -> mid and mid + 1 -> end
     std::vector<T> temp(len);
@@ -53,73 +71,100 @@ void merge_sort(sf::RenderWindow &window, std::vector<T> &v, int start, int end,
 
     while (i < mid && j <= end)
     {
-        if (v[i] <= v[j])
-            temp[curr++] = v[i++];
+        if (v2[i] <= v2[j])
+            temp[curr++] = v2[i++];
         else
-            temp[curr++] = v[j++];
+            temp[curr++] = v2[j++];
     }
 
     while (i < mid)
-        temp[curr++] = v[i++];
+        temp[curr++] = v2[i++];
 
     while (j <= end)
-        temp[curr++] = v[j++];
+        temp[curr++] = v2[j++];
 
-    std::copy(temp.begin(), temp.end(), v.begin() + start);
+    std::copy(temp.begin(), temp.end(), v2.begin() + start);
 
-    if (len == v.size())
-        is_sorted = true;
+    if (len == v2.size())
+        sorted2 = true;
 
     for (int i = start; i <= end; ++i)
-        render(window, v, i, is_sorted, dropdown);
+    {
+        idx2 = i;
+        std::this_thread::sleep_for(std::chrono::milliseconds(15));
+    }
 }
 
 // --- QUICK SORT ---
 
 template <typename T>
-int partition(sf::RenderWindow &window, std::vector<T> &v, int start, int end, DropdownMenu &dropdown)
+int partition(sf::RenderWindow &window,
+              DropdownMenu &dropdown,
+              std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+              std::tuple<int, int, int> &curr_index,
+              std::tuple<bool, bool, bool> &is_sorted,
+              int start,
+              int end)
 {
+    auto &v3 = std::get<2>(v);
+    auto &idx3 = std::get<2>(curr_index);
+    auto &sorted3 = std::get<2>(is_sorted);
+
     // Choose random pivot index and swap with end element
     int pivot_idx = start + std::rand() % (end - start + 1);
-    render(window, v, pivot_idx, false, dropdown);
-    std::swap(v[pivot_idx], v[end]);
+    idx3 = pivot_idx;
+    sorted3 = false;
+    std::this_thread::sleep_for(std::chrono::milliseconds(15));
+    std::swap(v3[pivot_idx], v3[end]);
 
     // Partition the vector
-    T pivot = v[end];
+    T pivot = v3[end];
     int i = start - 1;
 
     for (int j = start; j < end; ++j)
     {
-        if (v[j] < pivot)
+        if (v3[j] < pivot)
         {
             ++i;
-            std::swap(v[i], v[j]);
+            std::swap(v3[i], v3[j]);
         }
     }
 
-    std::swap(v[i + 1], v[end]);
-    render(window, v, i + 1, false, dropdown);
+    std::swap(v3[i + 1], v3[end]);
+    idx3 = i + 1;
+    sorted3 = false;
+    std::this_thread::sleep_for(std::chrono::milliseconds(15));
     return i + 1;
 }
 
-// template <std::totally_ordered T>
 template <typename T>
-void quick_sort(sf::RenderWindow &window, std::vector<T> &v, int start, int end, bool &is_sorted, DropdownMenu &dropdown)
+void quick_sort(sf::RenderWindow &window,
+                DropdownMenu &dropdown,
+                std::tuple<std::vector<int>, std::vector<int>, std::vector<int>> &v,
+                std::tuple<int, int, int> &curr_index,
+                std::tuple<bool, bool, bool> &is_sorted,
+                int start,
+                int end)
 {
+    auto &v3 = std::get<2>(v);
+    auto &idx3 = std::get<2>(curr_index);
+    auto &sorted3 = std::get<2>(is_sorted);
+
     if (start < end)
     {
         // Partition the vector and get the pivot index
-        int pivot_idx = partition(window, v, start, end, dropdown);
+        int pivot_idx = partition<T>(window, dropdown, v, curr_index, is_sorted, start, end);
 
         // Recursively sort the sub-vectors
-        quick_sort(window, v, start, pivot_idx - 1, is_sorted, dropdown);
-        quick_sort(window, v, pivot_idx + 1, end, is_sorted, dropdown);
+        quick_sort<T>(window, dropdown, v, curr_index, is_sorted, start, pivot_idx - 1);
+        quick_sort<T>(window, dropdown, v, curr_index, is_sorted, pivot_idx + 1, end);
     }
 
     int len = end - start + 1;
-    if (len == v.size())
+    if (len == v3.size())
     {
-        is_sorted = true;
-        render(window, v, v.size() - 1, is_sorted, dropdown);
+        idx3 = v3.size() - 1;
+        sorted3 = true;
+        std::this_thread::sleep_for(std::chrono::milliseconds(15));
     }
 }
